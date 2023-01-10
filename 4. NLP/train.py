@@ -35,7 +35,7 @@ def Training(args: ArgumentParser):
         mode="max",
         save_weights_only=True)
     
-    mlf_logger = MLFlowLogger(experiment_name="ner_for_hr",
+    mlf_logger = MLFlowLogger(experiment_name="testing",
                               tracking_uri="file:./mlruns",
                               run_name=run_name)
     
@@ -63,7 +63,7 @@ def Training(args: ArgumentParser):
         model=model_module,
         datamodule=data_module)
 
-    #mlf_logger.experiment.log_artifact(mlf_logger.run_id, 'checkpoints/' + run_name)
+    mlf_logger.experiment.log_artifact(mlf_logger.run_id,Path(PATH_CHECKPOINT, run_name))
     trainer.test(
             model=model_module, 
             datamodule=data_module
