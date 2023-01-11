@@ -1,6 +1,6 @@
 import re
 import unicodedata
-from typing import List
+import typing as t
 
 
 def is_float(element) -> bool:
@@ -41,3 +41,45 @@ def preprocess_text(text: str):
     normed_text = ' '.join(new_words)
 
     return normed_text
+
+def split_content(lines: t.List)  -> t.List:
+    out = []
+    temp = []
+    for line in lines:
+        if line.strip()=='':
+            out.append(temp)
+            temp = []
+        else:
+            temp.append(line)
+    if temp != []:
+        out.append(temp)
+    return out
+
+def check(lines: t.List) -> bool:
+    for line in lines:
+        if line.strip()[0] in ['-','•']:
+            return True
+    return False
+
+def merger(cluster: t.List) -> t.List:
+    out = []
+    temp =[]
+    for line in cluster:
+        if line.strip()[0] in ['-','•']:
+            out.append("".join(temp))
+            temp = [line]
+        else:
+            temp.append(line)
+    if temp != []:
+        out.append("".join(temp))
+    return out
+
+def preprocess_JD(JD: str) -> t.List:
+    clusters = split_content(JD.split('\n'))
+    out = []
+    for cluster in clusters :
+        if check(cluster):
+            out.extend(merger(cluster))
+        else:
+            out.append(''.join(cluster))
+    return out

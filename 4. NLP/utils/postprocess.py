@@ -1,4 +1,6 @@
-def concat_tag(iob_format):
+import typing as t
+
+def concat_tag(iob_format: t.List) -> t.Tuple:
     word_list = [item[0] for item in iob_format]
     tag_list = [item[1] for item in iob_format]
 
@@ -23,4 +25,4 @@ def concat_tag(iob_format):
                 pre_word = new_word_list[-1]
                 new_word_list[-1] = (pre_word + ' ' + word)
 
-    return new_word_list, new_tag_list
+    return (new_word_list, new_tag_list )
