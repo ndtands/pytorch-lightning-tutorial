@@ -144,7 +144,7 @@ class NERModelModule(pl.LightningModule):
         train_loader = self.trainer.datamodule.train_dataloader()
 
         # Calculate total steps
-        tb_size = self.hparams.train_batch_size * max(1, self.trainer.gpus)
+        tb_size = self.hparams.train_batch_size
         ab_size = tb_size * self.trainer.accumulate_grad_batches
         self.total_steps = int((len(train_loader.dataset) / ab_size) * float(self.trainer.max_epochs))
     
