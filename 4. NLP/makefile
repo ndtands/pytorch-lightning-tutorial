@@ -1,9 +1,9 @@
 training:
 	python main.py --run_name jd_extract \
 				   --dataset_version version_2 \
-				   --max_seq_length 128 \
-				   --train_batch_size 32 \
-				   --num_epochs 3 \
+				   --max_seq_length 152 \
+				   --train_batch_size 16 \
+				   --num_epochs 25 \
 				   --learning_rate 2e-5 
 mlflow:
 	mlflow ui

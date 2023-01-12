@@ -20,5 +20,5 @@ if __name__ == '__main__':
     parser.add_argument('--weight_decay', type=float, default=0.0)
     
     args = parser.parse_args()
-    Debuging(args)
+    Training(args)
     
