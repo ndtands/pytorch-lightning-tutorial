@@ -3,6 +3,7 @@ from pathlib import Path
 
 # Configs GPU ID
 os.environ['CUDA_VISIBLE_DEVICES']='1'
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Create path
 BASE_DIR = Path(os.getcwd())
