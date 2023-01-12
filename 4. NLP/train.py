@@ -3,7 +3,7 @@ from model import NERModelModule
 from dataset import NERDataModule
 import warnings
 import torch
-from configs import TAGS, PATH_CHECKPOINT
+from configs import *
 from argparse import ArgumentParser
 from pytorch_lightning.loggers import MLFlowLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -18,7 +18,7 @@ def Training(args: ArgumentParser):
     run_name = args.run_name
     run_name += '_{}'.format(time.time())
 
-    data_module = NERDataModule(model_name_or_path=args.model_name_or_path,
+    data_module = NERDataModule(model_name_or_path=BASE_MODEL_NAME,
                        dataset_version=args.dataset_version,
                        tags_list=TAGS,
                        label_all_tokens=args.label_all_tokens,
@@ -35,7 +35,7 @@ def Training(args: ArgumentParser):
         mode="max",
         save_weights_only=True)
     
-    mlf_logger = MLFlowLogger(experiment_name="testing",
+    mlf_logger = MLFlowLogger(experiment_name="jd_extract",
                               tracking_uri="file:./mlruns",
                               run_name=run_name)
     
