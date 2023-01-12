@@ -2,12 +2,13 @@ from pytorch_lightning import seed_everything, Trainer
 from model import NERModelModule
 from dataset import NERDataModule
 import warnings
-import torch
 from configs import *
 from argparse import ArgumentParser
 from pytorch_lightning.loggers import MLFlowLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+from pytorch_lightning import loggers as pl_loggers
+from pytorch_lightning.loggers import WandbLogger
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
@@ -30,7 +31,7 @@ def Training(args: ArgumentParser):
     checkpoint_callback = ModelCheckpoint(
         monitor='val_overall_f1',
         dirpath=Path(PATH_CHECKPOINT, run_name),
-        filename='{epoch:02d}--{val_overall_f1:.2f}',
+        filename='32--{epoch:02d}--{val_overall_f1:.2f}',
         save_top_k=2,
         mode="max",
         save_weights_only=True)
@@ -51,12 +52,17 @@ def Training(args: ArgumentParser):
                         warmup_steps=args.warmup_steps,
                         weight_decay=args.weight_decay
                         )
-    
-    AVAIL_GPUS = min(1, torch.cuda.device_count())
+    #tensorboard = pl_loggers.TensorBoardLogger(save_dir="")
+    # wandb_logger = WandbLogger(project="JD_Extract", log_model="all")
+
     trainer = Trainer(
-        gpus=AVAIL_GPUS,
+        precision=32,
+        accelerator="gpu",
+        devices=1,
         max_epochs=args.num_epochs,
+        #logger=tensorboard,
         logger=mlf_logger,
+        #logger=wandb_logger,
         callbacks=[checkpoint_callback, early_stop_callback])
     
     trainer.fit(
