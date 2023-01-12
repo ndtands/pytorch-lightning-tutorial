@@ -7,21 +7,19 @@ from inference import (
 from model import NERModelModule
 from pydantic import BaseModel
 from transformers import AutoTokenizer
-from configs import TAGS, BEST_CHECKPOINT
+from configs import *
 import warnings
 import torch
 import os
 from fastapi import FastAPI
 warnings.filterwarnings("ignore")
-os.environ["CUDA_VISIBLE_DEVICES"] = '1'
-
 
 api = FastAPI(title="JD Extraction", version='0.1.0')
 class TextInput(BaseModel):
     text: str
 
 model = NERModelModule(
-    model_name_or_path='xlm-roberta-base',
+    model_name_or_path=BASE_MODEL_NAME,
     num_labels=len(TAGS),
     tags_list=TAGS
 ).load_from_checkpoint(BEST_CHECKPOINT)
@@ -31,7 +29,7 @@ model.to(device)
 model.eval()
 
 # Load tokenizer
-tokenizer = AutoTokenizer.from_pretrained('xlm-roberta-base', use_fast=True)
+tokenizer = model.tokenizer
 
 @api.post("/jd_extraction")
 def predict(text_input: TextInput):

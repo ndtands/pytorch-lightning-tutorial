@@ -7,6 +7,7 @@ import numpy as np
 import re
 from utils.preprocess import preprocess_text
 from utils.postprocess import concat_tag
+import time
 
 def inference(model: NERModelModule, 
         tokenizer: AutoTokenizer,
@@ -34,7 +35,11 @@ def inference(model: NERModelModule,
         encoding['attention_mask'] = torch.cuda.LongTensor(encoding['attention_mask'], device=device)
 
     word_ids = tokenized_text.word_ids()
-    results = model(**encoding)['logits']
+    dropout = torch.nn.Dropout()
+    dropout.train()
+    start = time.time()
+    results = dropout(model(**encoding)['logits'])
+    print(time.time() - start)
     logit = results.detach().cpu().numpy()
     prediction = np.argmax(logit, axis=-1).squeeze()
     tag_prediction = []

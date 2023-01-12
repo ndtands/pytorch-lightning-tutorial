@@ -1,12 +1,13 @@
-from abc import ABC
 import typing
 import torch
 import datasets
 import pytorch_lightning as pl
+import pdb
 from transformers import (
     AdamW,
     AutoConfig,
     AutoModelForTokenClassification,
+    AutoTokenizer,
     get_linear_schedule_with_warmup,
 )
 
@@ -27,13 +28,23 @@ class NERModelModule(pl.LightningModule):
     ):
         super().__init__()
         self.tags_list = tags_list
-        self.save_hyperparameters()
-
+        self.save_hyperparameters() 
         self.config = AutoConfig.from_pretrained(model_name_or_path, num_labels=num_labels)
-        self.model = AutoModelForTokenClassification.from_pretrained(model_name_or_path, config=self.config)
-        self.metrics = datasets.load_metric('seqeval')
-    
+        self.model = AutoModelForTokenClassification.from_pretrained(model_name_or_path, config=self.config) 
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
+
+        self.example_input_array = {
+            'input_ids': torch.randint(3, 2000, (16, 128)).type(torch.LongTensor) ,
+            'attention_mask':  torch.ones(16, 128),
+            'labels':  torch.ones(16, 128).type(torch.LongTensor) 
+        }
+        self.metrics = datasets.load_metric('seqeval') 
+        
     def forward(self, **inputs):
+        # print(inputs['input_ids'].shape)
+        # print(inputs['attention_mask'].shape)
+        # print(inputs['labels'].shape)
+        # pdb.set_trace() # Set Breakpoint
         return self.model(**inputs)
 
     def training_step(self, batch, batch_idx):

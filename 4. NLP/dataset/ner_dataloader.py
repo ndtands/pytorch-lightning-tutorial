@@ -15,10 +15,7 @@ class NerDataset(Dataset):
         self.max_seq_length = max_seq_length
         self.label_all_tokens = label_all_tokens
 
-        if 'mluke' in model_name_or_path:
-            self.tokenizer = MLukeTokenizer.from_pretrained(model_name_or_path, use_fast=True)
-        else:
-            self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
         self.tag2id = {}
         for i in range(len(tags_list)):
             self.tag2id[tags_list[i]] = i
@@ -70,7 +67,6 @@ class NerDataset(Dataset):
                                           max_length=self.max_seq_length,
                                           padding='max_length')
         word_ids = tokenized_inputs.word_ids()
-
         previous_word_idx = None
         label_ids = []
         count = 0

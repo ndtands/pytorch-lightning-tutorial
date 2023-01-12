@@ -8,7 +8,8 @@ os.environ['CUDA_VISIBLE_DEVICES']='1'
 BASE_DIR = Path(os.getcwd())
 PATH_DATASET = Path(BASE_DIR, "artifact/data") 
 PATH_CHECKPOINT = Path(BASE_DIR,"artifact/weight")
-BEST_CHECKPOINT = '/media/Z/TanND22/1024/NER_JD/v2/epoch=19--val_overall_f1=0.85.ckpt'
+
+# Configuration for training
 TAGS = [
         "O",
         "B-SKILL_LEVEL", "I-SKILL_LEVEL",
@@ -18,6 +19,11 @@ TAGS = [
         "B-DEGREE", "I-DEGREE",
         "B-MAJOR", "I-MAJOR",
     ]
+BASE_MODEL_NAME = "xlm-roberta-base"
+# Configuration for deployment
+RUN_ID = "jd_extract_1673449211.8823872"
+WEIGHT_NAME = "epoch=20--val_overall_f1=0.85.ckpt"
+BEST_CHECKPOINT = Path(PATH_CHECKPOINT, RUN_ID, WEIGHT_NAME)
 
 # Visualize
 COLORS ={
