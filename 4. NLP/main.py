@@ -11,6 +11,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_batch_size', type=int, default=16)
     parser.add_argument('--eval_batch_size', type=int, default=16)
     parser.add_argument('--num_epochs', type=int, default=15)
+    parser.add_argument('--precision', type=int, default=32)
 
     # model specific arguments
     parser.add_argument('--use_crf', type=bool, default=False)

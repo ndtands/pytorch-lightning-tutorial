@@ -9,6 +9,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning import loggers as pl_loggers
 from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.callbacks import StochasticWeightAveraging
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
@@ -31,7 +32,7 @@ def Training(args: ArgumentParser):
     checkpoint_callback = ModelCheckpoint(
         monitor='val_overall_f1',
         dirpath=Path(PATH_CHECKPOINT, run_name),
-        filename='32--{epoch:02d}--{val_overall_f1:.2f}',
+        filename='{epoch:02d}--{val_overall_f1:.2f}',
         save_top_k=2,
         mode="max",
         save_weights_only=True)
@@ -46,7 +47,7 @@ def Training(args: ArgumentParser):
                         tags_list=data_module.tags_list,
                         train_batch_size=data_module.train_batch_size,
                         eval_batch_size=data_module.eval_batch_size,
-                        use_crf=args.use_crf,
+                        precision=args.precision,
                         learning_rate=args.learning_rate,
                         adam_epsilon=args.adam_epsilon,
                         warmup_steps=args.warmup_steps,
@@ -54,12 +55,15 @@ def Training(args: ArgumentParser):
                         )
     #tensorboard = pl_loggers.TensorBoardLogger(save_dir="")
     # wandb_logger = WandbLogger(project="JD_Extract", log_model="all")
+    #swa_callback = StochasticWeightAveraging(swa_lrs=1e-2)
 
     trainer = Trainer(
-        precision=32,
+        precision=args.precision,
         accelerator="gpu",
-        devices=1,
+        devices=-1,
         max_epochs=args.num_epochs,
+        # gradient_clip_val=0.5, 
+        # gradient_clip_algorithm="value",
         #logger=tensorboard,
         logger=mlf_logger,
         #logger=wandb_logger,
