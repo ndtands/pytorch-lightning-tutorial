@@ -127,6 +127,13 @@
 
     cli = pl_cli.LightningCLI(DemoModel, BoringDataModule)
     ```
-- 
+- Exploding and vanishing gradient
+    + Early stopping
+    + Gradient clipping
 
 
+- Effective traning Techniques
+    + Find best learning rate
+    + Stochastic Weight Averaging 
+    + Accumulate gradient:
+When using distributed training for eg. DDP, with let’s say with P devices, each device accumulates independently i.e. it stores the gradients after each loss.backward() and doesn’t sync the gradients across the devices until we call optimizer.step(). So for each accumulation step, the effective batch size on each device will remain N*K but right before the optimizer.step(), the gradient sync will make the effective batch size as P*N*K. For DP, since the batch is split across devices, the final effective batch size will be N*K.
